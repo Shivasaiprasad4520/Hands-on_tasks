@@ -1,0 +1,38 @@
+---
+- name: Automate user creation and SSH key injection
+  hosts: all
+  become: yes
+
+  vars:
+    username: devopsuser
+    user_shell: /bin/bash
+    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCexamplekey12345 user@laptop"
+
+  tasks:
+
+    - name: Create new user
+      user:
+        name: "{{ username }}"
+        shell: "{{ user_shell }}"
+        create_home: yes
+        state: present
+
+    - name: Create .ssh directory
+      file:
+        path: "/home/{{ username }}/.ssh"
+        state: directory
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        mode: '0700'
+
+    - name: Inject SSH public key
+      authorized_key:
+        user: "{{ username }}"
+        key: "{{ ssh_public_key }}"
+        state: present
+
+    - name: Give sudo access
+      copy:
+        dest: "/etc/sudoers.d/{{ username }}"
+        content: "{{ username }} ALL=(ALL) NOPASSWD:ALL"
+        mode: '0440'
