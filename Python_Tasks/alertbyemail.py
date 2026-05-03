@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+### This script to Schedule a cron job for disk usage alert via Python email
+
+
 import shutil
 import smtplib
 from email.mime.text import MIMEText
