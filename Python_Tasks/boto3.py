@@ -1,3 +1,4 @@
+### this script using Boto3 to list + start/stop EC2s by tag 
 
 import boto3
 
